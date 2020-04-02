@@ -13,12 +13,10 @@ defmodule ListOps do
   def filter([], _), do: []
 
   def filter([head | tail], pred) do
-    case pred.(head) do
-      true ->
-        [head | filter(tail, pred)]
-
-      false ->
-        filter(tail, pred)
+    if pred.(head) do
+      [head | filter(tail, pred)]
+    else
+      filter(tail, pred)
     end
   end
 

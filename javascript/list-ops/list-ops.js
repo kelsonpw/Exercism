@@ -8,38 +8,34 @@ export class List {
     this.values = [...values];
   }
 
+  attach(val) {
+    return this.append(new List([val]));
+  }
+
   append(list) {
     return new List([...this.values, ...list.values]);
   }
 
   concat(list) {
-    let result = this;
-    for (const val of list.values) {
-      result = result.append(val instanceof List ? val : new List([val]));
-    }
-    return result;
+    return list.foldl(
+      (acc, val) => (val instanceof List ? acc.append(val) : acc.attach(val)),
+      this
+    );
   }
 
   filter(pred) {
-    const filtered = [];
-    for (const val of this.values) {
-      pred(val) && filtered.push(val);
-    }
-    return new List(filtered);
+    return this.foldl(
+      (acc, val) => (pred(val) ? acc.attach(val) : acc),
+      new List()
+    );
   }
 
   map(func) {
-    const mapped = [];
-    for (const val of this.values) {
-      mapped.push(func(val));
-    }
-    return new List(mapped);
+    return this.foldl((acc, val) => acc.attach(func(val)), new List());
   }
 
   length() {
-    let length = 0;
-    for (const _ of this.values) length++;
-    return length;
+    return this.foldl(acc => acc + 1, 0);
   }
 
   foldl(func, initial) {
@@ -51,14 +47,18 @@ export class List {
   }
 
   foldr(func, initial) {
-    return this.reverse().foldl(func, initial);
+    let acc = initial;
+    let len = this.length();
+    for (const i in this.values) {
+      acc = func(acc, this.values[len - 1 - i]);
+    }
+    return acc;
   }
 
   reverse() {
-    let reversed = [];
-    for (const val of this.values) {
-      reversed.unshift(val);
-    }
-    return new List(reversed);
+    return this.foldr(
+      (acc, val) => (val instanceof List ? acc.append(val) : acc.attach(val)),
+      new List()
+    );
   }
 }
