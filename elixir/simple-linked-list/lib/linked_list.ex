@@ -5,15 +5,10 @@ defmodule LinkedList do
 
   @empty_error {:error, :empty_list}
 
-  def new() do
-    %LinkedList{}
-  end
+  def new(), do: %LinkedList{}
 
   def push(%LinkedList{} = list, elem) do
-    %LinkedList{
-      elem: elem,
-      tail: list
-    }
+    %LinkedList{elem: elem, tail: list}
   end
 
   def length(%LinkedList{elem: nil}), do: 0
@@ -31,23 +26,16 @@ defmodule LinkedList do
 
   def tail(%LinkedList{elem: nil}), do: @empty_error
 
-  def tail(%LinkedList{tail: tail}) do
-    {:ok, tail}
-  end
+  def tail(%LinkedList{tail: tail}), do: {:ok, tail}
 
   def pop(%LinkedList{elem: nil}), do: @empty_error
 
-  def pop(%LinkedList{elem: elem, tail: tail}) do
-    {:ok, elem, tail}
-  end
+  def pop(%LinkedList{elem: elem, tail: tail}), do: {:ok, elem, tail}
 
   def from_list([]), do: new()
 
   def from_list([head | tail]) do
-    %LinkedList{
-      elem: head,
-      tail: from_list(tail)
-    }
+    %LinkedList{elem: head, tail: from_list(tail)}
   end
 
   def to_list(%LinkedList{elem: nil}), do: []
