@@ -23,17 +23,9 @@ defmodule LinkedList do
   def peek(%LinkedList{elem: elem}), do: {:ok, elem}
 
   def tail(%LinkedList{elem: nil}), do: @empty_error
-<<<<<<< HEAD
-
   def tail(%LinkedList{tail: tail}), do: {:ok, tail}
 
   def pop(%LinkedList{elem: nil}), do: @empty_error
-
-=======
-  def tail(%LinkedList{tail: tail}), do: {:ok, tail}
-
-  def pop(%LinkedList{elem: nil}), do: @empty_error
->>>>>>> cab3d7a721dc131a95c4f35699529c9a57202aeb
   def pop(%LinkedList{elem: elem, tail: tail}), do: {:ok, elem, tail}
 
   def from_list([]), do: new()
