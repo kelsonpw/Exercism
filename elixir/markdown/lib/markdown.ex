@@ -19,6 +19,7 @@ defmodule Markdown do
 
   defp wrap_lists(text),
     do: String.replace(text, ~r/(?<!<\/li>)<li>(.*)<\/li>(?!<li>)/, "<ul><li>\\1</li></ul>")
+
   def bold(text), do: String.replace(text, ~r/__([^_]*)__/, "<strong>\\1</strong>")
   def em(text), do: String.replace(text, ~r/_([^_]*)_/, "<em>\\1</em>")
 end
