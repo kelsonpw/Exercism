@@ -1,7 +1,7 @@
 export default class List<T> {
-  values: number[];
+  values: T[];
 
-  constructor(initialValues: (number | List<T>)[] = []) {
+  constructor(initialValues: (T | List<T>)[] = []) {
     this.values = this.flattenLists(initialValues);
   }
 
@@ -17,25 +17,30 @@ export default class List<T> {
     return this.append(list);
   }
 
-  filter(pred: (el: number) => boolean): List<T> {
-    return new List(this.values.filter(pred));
+  filter(pred: (el: T) => boolean): List<T> {
+    const filteredValues = [];
+    for (const value of this.values) {
+      if (pred(value)) {
+        filteredValues.push(value);
+      }
+    }
+
+    return new List(filteredValues);
   }
 
-  map(cb: (el: number) => number): List<T> {
-    return new List(this.values.map(cb));
+  map(cb: (el: T) => T): List<T> {
+    const mappedValues = [];
+    for (const value of this.values) {
+      mappedValues.push(cb(value));
+    }
+    return new List(mappedValues);
   }
 
-  foldl(
-    accFn: (acc: number, el: number) => number,
-    initialValue: number
-  ): number {
+  foldl(accFn: (acc: T, el: T) => T, initialValue: T): T {
     return this.fold(accFn, initialValue, false);
   }
 
-  foldr(
-    accFn: (acc: number, el: number) => number,
-    initialValue: number
-  ): number {
+  foldr(accFn: (acc: T, el: T) => T, initialValue: T): T {
     return this.fold(accFn, initialValue, true);
   }
 
@@ -48,10 +53,10 @@ export default class List<T> {
   }
 
   private fold(
-    accFn: (acc: number, el: number) => number,
-    initialValue: number,
+    accFn: (acc: T, el: T) => T,
+    initialValue: T,
     reverse: boolean
-  ): number {
+  ): T {
     let result = initialValue;
     for (const val of reverse ? this.values.reverse() : this.values) {
       result = accFn(result, val);
@@ -59,8 +64,8 @@ export default class List<T> {
     return result;
   }
 
-  private flattenList(list: List<T>): number[] {
-    return [...list.values].reduce((acc: number[], value: number | List<T>) => {
+  private flattenList(list: List<T>): T[] {
+    return [...list.values].reduce((acc: T[], value: T | List<T>) => {
       if (value instanceof List) {
         return [...acc, ...this.flattenList(value)];
       }
@@ -69,9 +74,9 @@ export default class List<T> {
     }, []);
   }
 
-  private flattenLists(lists: (number | List<T>)[]): number[] {
+  private flattenLists(lists: (T | List<T>)[]): T[] {
     return lists.flatMap((value) =>
-      typeof value === "number" ? value : this.flattenList(value)
+      value instanceof List ? this.flattenList(value) : value
     );
   }
 }
